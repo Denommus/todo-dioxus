@@ -101,6 +101,7 @@ fn Home() -> Element {
                     });
                     input.set(Arc::from(""))
                 },
+                disabled: input.read().as_ref()=="",
                 "Add"
             }
             TodoList { items: items }
