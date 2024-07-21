@@ -1,12 +1,14 @@
 #![allow(non_snake_case)]
 
+use std::sync::Arc;
+
 use dioxus::prelude::*;
 use tracing::Level;
 
 
 #[derive(Clone, Debug, PartialEq, Eq, Props)]
 struct TodoItem {
-    contents: String,
+    contents: Arc<str>,
     done: bool,
 }
 
@@ -81,7 +83,7 @@ fn TodoList(items: Signal<Vec<TodoItem>>) -> Element {
 
 #[component]
 fn Home() -> Element {
-    let mut input = use_signal(|| "".to_string());
+    let mut input: Signal<Arc<str>> = use_signal(|| Arc::from(""));
     let mut items: Signal<Vec<TodoItem>> = use_signal(|| vec![]);
 
     rsx! {
@@ -89,7 +91,7 @@ fn Home() -> Element {
             h1 { "Todo App" }
             input {
                 value: "{input}",
-                oninput: move |event| input.set(event.value())
+                oninput: move |event| input.set(Arc::from(event.value()))
             }
             button {
                 onclick: move |_| {
@@ -97,7 +99,7 @@ fn Home() -> Element {
                         contents: input.read().clone(),
                         done: false,
                     });
-                    input.set("".to_string())
+                    input.set(Arc::from(""))
                 },
                 "Add"
             }
