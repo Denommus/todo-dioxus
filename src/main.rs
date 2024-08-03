@@ -5,7 +5,6 @@ use std::sync::Arc;
 use dioxus::prelude::*;
 use tracing::Level;
 
-
 #[derive(Clone, Debug, PartialEq, Eq, Props)]
 struct TodoItem {
     contents: Arc<str>,
@@ -36,30 +35,29 @@ fn App() -> Element {
 
 #[component]
 fn TodoList(items: Signal<Vec<TodoItem>>) -> Element {
-    let rendered_items =
-        items.iter().zip(0..).map(|(item, i)| {
-            let style = if item.done {
-                r#"
-                  text-decoration: line-through
-                "#
-            } else {
-                ""
-            };
-            rsx! {
-                li {
-                    style: style,
-                    {item.contents.clone()}
-                    input {
-                        r#type: "checkbox",
-                        checked: item.done,
-                        onchange: move |_| {
-                            let mut writer = items.write();
-                            writer[i].done = !writer[i].done;
-                        }
+    let rendered_items = items.iter().zip(0..).map(|(item, i)| {
+        let style = if item.done {
+            r#"
+                text-decoration: line-through
+            "#
+        } else {
+            ""
+        };
+        rsx! {
+            li {
+                style: style,
+                {item.contents.clone()}
+                input {
+                    r#type: "checkbox",
+                    checked: item.done,
+                    onchange: move |_| {
+                        let mut writer = items.write();
+                        writer[i].done = !writer[i].done;
                     }
                 }
             }
-        });
+        }
+    });
 
     rsx! {
         ul {
